@@ -21,33 +21,26 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "user"],
+      enum: ["user", "admin"],
       default: "user",
     },
     password: {
       type: String,
       required: true,
-      minlength: [6, "Minmum lenght should be 6"],
+      minlength: [6, "Minimum length should be 6"],
     },
-    confirmPassword: {
-      type: String,
-      required: true,
-      minlength: [6, "Minmum lenght should be 6"],
-      validate: {
-        validator: function (value) {
-          return value === this.password;
-        },
-        message: "Passwords do not match",
-      },
-    },
+    otp: { type: Number },
+    otp_expiry: Number,
+    verify: { type: Boolean, default: false },
   },
   {
     timestamps: true,
-  },
-  {
     versionkey: false,
   }
 );
+
+// Define a TTL index on the `createdAt` field to delete documents after 60 seconds (1 minute)
+userSchema.index({ otp_expiry: 1 }, { expireAfterSeconds: 0 }); //20days
 
 const userModel = model(`User`, userSchema);
 module.exports = userModel;

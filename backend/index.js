@@ -1,11 +1,12 @@
 const connection = require("./config/connectDB");
-const PORT = process.env.PORT || 5000;
+require("dotenv").config({ path: "./config/config.env" });
+
 const { app } = require("./app");
 
-app.listen(PORT, async () => {
+app.listen(5000, async () => {
   try {
     await connection;
-    console.log(`Server listening on ${PORT}`);
+    console.log(`Server listening on ${process.env.PORT}`);
   } catch (error) {
     console.log("err :" + error.message);
   }
