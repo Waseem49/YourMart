@@ -1,5 +1,5 @@
 require("dotenv").config({ path: "./config/config.env" });
-const userModel = require("../Models/userModel");
+const { userModel } = require("../Models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
@@ -24,7 +24,7 @@ exports.registerUser = async (req, res) => {
           ...req.body,
           password: hashpassword,
           otp,
-          otp_expiry: Math.floor(Date.now() / 1000) + 2 * 60,
+          otp_expiry: new Date(Date.now() + 2 * 60 * 1000),
         },
         {
           upsert: true,
@@ -45,11 +45,12 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+//Verify user
 exports.verify = async (req, res) => {
   const user = req.user;
   const otp = Number(req.body.otp);
   if (!otp) return res.send("Entre OTP!");
-  if (otp !== user.otp || user.otp_expiry < Math.floor(Date.now() / 1000)) {
+  if (otp !== user.otp || user.otp_expiry < Date.now()) {
     res.send("invalid otp or otp  has expired");
   } else {
     user.verify = true;
@@ -63,8 +64,10 @@ exports.verify = async (req, res) => {
 // Login user
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
   try {
     const user = await userModel.findOne({ email: email });
+    console.log(user);
     if (user && user.verify === false)
       return res.status(200).send("Verify first!");
     if (user && user.verify === true) {
@@ -78,6 +81,29 @@ exports.loginUser = async (req, res) => {
       res.status(200).send("User not found. Please try again");
     }
   } catch (error) {}
+};
+
+exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email: email });
+
+    if (!user) {
+      return res.status(200).send("User not found. Please try again");
+    }
+    if (user.verify === false) {
+      return res.status(200).send("Verify first!");
+    }
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (isPasswordMatch) {
+      sendToken(res, 200, "Login Successful!", user);
+    } else {
+      res.status(200).send("Wrong Credentials. Please try again");
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 //Logout user

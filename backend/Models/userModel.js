@@ -24,13 +24,19 @@ const userSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    cart: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     password: {
       type: String,
       required: true,
       minlength: [6, "Minimum length should be 6"],
     },
     otp: { type: Number },
-    otp_expiry: Number,
+    otp_expiry: Date,
     verify: { type: Boolean, default: false },
   },
   {
@@ -42,5 +48,4 @@ const userSchema = new Schema(
 // Define a TTL index on the `createdAt` field to delete documents after 60 seconds (1 minute)
 userSchema.index({ otp_expiry: 1 }, { expireAfterSeconds: 0 }); //20days
 
-const userModel = model(`User`, userSchema);
-module.exports = userModel;
+exports.userModel = model(`User`, userSchema);

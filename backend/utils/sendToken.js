@@ -9,7 +9,7 @@ exports.sendToken = (res, statuscode, message, user) => {
   );
   const options = {
     httpOnly: true,
-    expires: new Date(Date.now() + 10 * 60 * 1000),
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   };
   res
     .status(statuscode)
