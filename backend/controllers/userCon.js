@@ -62,32 +62,31 @@ exports.verify = async (req, res) => {
 };
 
 // Login user
-exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  console.log(email, password);
-  try {
-    const user = await userModel.findOne({ email: email });
-    console.log(user);
-    if (user && user.verify === false)
-      return res.status(200).send("Verify first!");
-    if (user && user.verify === true) {
-      const machedpassword = await bcrypt.compare(password, user.password);
-      if (machedpassword) {
-        sendToken(res, 200, "Login Successfull!", user);
-      } else {
-        res.status(200).send("Wrong Credentials. Please try again");
-      }
-    } else {
-      res.status(200).send("User not found. Please try again");
-    }
-  } catch (error) {}
-};
+// exports.loginUser = async (req, res) => {
+//   const { email, password } = req.body;
+//   console.log(email, password);
+//   try {
+//     const user = await userModel.findOne({ email: email });
+//     console.log(user);
+//     if (user && user.verify === false)
+//       return res.status(200).send("Verify first!");
+//     if (user && user.verify === true) {
+//       const machedpassword = await bcrypt.compare(password, user.password);
+//       if (machedpassword) {
+//         sendToken(res, 200, "Login Successfull!", user);
+//       } else {
+//         res.status(200).send("Wrong Credentials. Please try again");
+//       }
+//     } else {
+//       res.status(200).send("User not found. Please try again");
+//     }
+//   } catch (error) {}
+// };
 
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email: email });
-
     if (!user) {
       return res.status(200).send("User not found. Please try again");
     }

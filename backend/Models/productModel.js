@@ -14,6 +14,22 @@ const productSchema = new mongoose.Schema(
     category: { type: String, required: true },
     brand: { type: String, required: true },
     stock: { type: Number, required: true, default: 10 },
+    review: [
+      {
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          required: true,
+        },
+        text: {
+          type: String,
+          required: true,
+        },
+      },
+      {
+        timestamps: true,
+      },
+    ],
   },
   {
     versionKey: false,
