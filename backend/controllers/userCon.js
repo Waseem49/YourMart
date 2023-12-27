@@ -100,7 +100,6 @@ exports.loginUser = async (req, res) => {
       res.status(200).send("Wrong Credentials. Please try again");
     }
   } catch (error) {
-    console.error("Error during login:", error);
     res.status(500).send("Internal Server Error");
   }
 };

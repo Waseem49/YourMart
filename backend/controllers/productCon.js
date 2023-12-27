@@ -163,3 +163,29 @@ exports.removefromtoCart = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+exports.addReview = async (req, res) => {
+  const productId = req.params.productId;
+  const { rating, comment } = req.body;
+
+  const review = {
+    userId: req.user._id,
+    comment: comment,
+    rating: rating,
+  };
+
+  try {
+    const product = await productModel.findById(productId);
+    product.review.push(review);
+    const rat =
+      product.review.reduce((acc, el) => {
+        acc += el.rating;
+        return acc;
+      }, 0) || 0;
+    product.rating = rat / product.review.length;
+    await product.save();
+    res.status(200).send("Review added successfully");
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};

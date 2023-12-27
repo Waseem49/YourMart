@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: [101, "Price should be minimum 101"],
     },
-    rating: { type: Number, required: true, max: [5, "Max value will be 5"] },
+    rating: { type: Number, default: 0, max: [5, "Max value will be 5"] },
     category: { type: String, required: true },
     brand: { type: String, required: true },
     stock: { type: Number, required: true, default: 10 },
@@ -21,10 +21,10 @@ const productSchema = new mongoose.Schema(
           ref: "User",
           required: true,
         },
-        text: {
+        comment: {
           type: String,
-          required: true,
         },
+        rating: { type: Number },
       },
       {
         timestamps: true,

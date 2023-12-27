@@ -5,6 +5,7 @@ const {
   deleteProduct,
   addtoCart,
   removefromtoCart,
+  addReview,
 } = require("../controllers/productCon");
 const { isAdmin, isAuthenticated } = require("../middleware/auth");
 
@@ -18,5 +19,6 @@ productRouter
   .route("/:productId")
   .post(isAuthenticated, addtoCart)
   .patch(isAuthenticated, removefromtoCart);
+productRouter.route("/review/:productId").patch(isAuthenticated, addReview);
 
 module.exports = productRouter;

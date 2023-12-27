@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
 require("dotenv").config({ path: "./config/config.env" });
 
-exports.connection = mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+exports.connection = mongoose.connect(process.env.MONGODB_URI);
